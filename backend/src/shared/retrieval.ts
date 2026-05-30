@@ -1,5 +1,5 @@
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { GoogleGenerativeAIEmbeddings, TaskType } from "@langchain/google-genai";
 import { createClient } from "@supabase/supabase-js";
 import { VectorStoreRetriever } from "@langchain/core/vectorstores";
 import { Document } from "@langchain/core/documents";
@@ -13,7 +13,7 @@ function getEmbeddings(config: SharedConfiguration): GoogleGenerativeAIEmbedding
   return new GoogleGenerativeAIEmbeddings({
     apiKey,
     modelName: config.embeddingModel,
-    taskType: "retrieval_document",
+    taskType: TaskType.RETRIEVAL_DOCUMENT,
   });
 }
 
