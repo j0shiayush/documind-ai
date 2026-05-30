@@ -1,5 +1,6 @@
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { GoogleGenerativeAIEmbeddings, TaskType } from "@langchain/google-genai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { TaskType } from "@google/generative-ai";
 import { createClient } from "@supabase/supabase-js";
 import { VectorStoreRetriever } from "@langchain/core/vectorstores";
 import { Document } from "@langchain/core/documents";
