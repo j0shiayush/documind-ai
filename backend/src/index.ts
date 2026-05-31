@@ -41,18 +41,26 @@ app.post("/api/chat", async (req, res) => {
     console.log(`[chat] Starting stream for user: ${user_id}`);
 
     const stream = await retrievalGraph.streamEvents(
-      { messages, activeFile, user_id },
-      { version: "v2" }
-    );
-
-    for await (const event of stream) {
-      // Stream the text chunks from the LLM
-      if (event.event === "on_chat_model_stream") {
-         const chunk = event.data.chunk;
-         if (chunk && chunk.content) {
-            res.write(`data: ${JSON.stringify({ type: "snapshot", content: chunk.content })}\n\n`);
-         }
-      }
+        { messages, activeFile, user_id },
+        { version: "v2" }
+      );
+  
+      // 1. ADD THIS VARIABLE: Create an accumulator to hold the full message
+      let fullResponse = ""; 
+  
+      for await (const event of stream) {
+        if (event.event === "on_chat_model_stream") {
+           const chunk = event.data.chunk;
+           if (chunk && chunk.content) {
+              // 2. Add the new chunk to our full response string
+              fullResponse += chunk.content; 
+              
+              // 3. Send the FULL response to the frontend instead of just the chunk
+              res.write(`data: ${JSON.stringify({ type: "snapshot", content: fullResponse })}\n\n`);
+           }
+        }
+        
+        // ... keep your existing "on_chain_end" block here exactly as it is ...
       // Grab the final sources when the generateAnswer node finishes
       if (event.event === "on_chain_end" && event.name === "generateAnswer") {
          const output = event.data.output;
