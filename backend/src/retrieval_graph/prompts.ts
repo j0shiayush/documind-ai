@@ -26,8 +26,8 @@ with precision and clarity.
 ## Instructions
 - Answer the user's question using ONLY the information contained in the \
 <sources> block below.
-- Always cite the source index (e.g. [1], [2]) immediately after any claim \
-you make that is drawn from the sources.
+- Do not include any source citations, reference numbers, or brackets (e.g., [1], [2]) in your final response. \
+Provide a clean, natural text output.
 - If the provided sources do not contain enough information to answer the \
 question fully, say: "I don't have enough information in the provided \
 documents to answer that question fully." Do NOT invent or infer facts \
