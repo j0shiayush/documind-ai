@@ -6,12 +6,13 @@ import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 
 export default function LoginPage() {
-  // Mode toggles
+  // 1. Elevated Mode Toggles
+  const [isSignUp, setIsSignUp] = useState(false); // Controls Sign In vs Sign Up globally
   const [authMode, setAuthMode] = useState<"email" | "phone">("email");
-  const [isSignUp, setIsSignUp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
   // Form states
+  const [name, setName] = useState(""); // 2. New state for Full Name
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
@@ -52,7 +53,16 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({ email, password });
+        // 3. Pass the Name into user_metadata during Sign Up
+        const { error } = await supabase.auth.signUp({ 
+          email, 
+          password,
+          options: {
+            data: {
+              full_name: name,
+            }
+          }
+        });
         if (error) throw error;
         setMessage("Success! Please check your email for a confirmation link.");
       } else {
@@ -77,8 +87,15 @@ export default function LoginPage() {
 
     try {
       if (!otpSent) {
-        // Step 1: Send the OTP
-        const { error } = await supabase.auth.signInWithOtp({ phone });
+        // Step 1: Send the OTP. If signing up, attach the Name metadata!
+        const { error } = await supabase.auth.signInWithOtp({ 
+          phone,
+          options: isSignUp ? {
+            data: {
+              full_name: name,
+            }
+          } : undefined
+        });
         if (error) throw error;
         setOtpSent(true);
         setMessage("OTP sent! Please check your phone.");
@@ -116,10 +133,10 @@ export default function LoginPage() {
             />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            Welcome to DocuMind AI
+            {isSignUp ? "Create an Account" : "Welcome to DocuMind AI"}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
-            Log in or create an account to start analyzing documents.
+            {isSignUp ? "Sign up to start analyzing documents." : "Log in to access your dashboard."}
           </p>
         </div>
 
@@ -161,33 +178,68 @@ export default function LoginPage() {
           <div className="flex-1 border-t border-gray-200 dark:border-gray-800"></div>
         </div>
 
-        {/* Auth Mode Tabs */}
+        {/* Global Sign Up / Sign In Toggle */}
         <div className="flex p-1 mb-6 bg-gray-100 dark:bg-gray-800/50 rounded-xl">
           <button
-            onClick={() => { setAuthMode("email"); setError(null); setMessage(null); }}
+            onClick={() => { setIsSignUp(false); setError(null); setMessage(null); }}
             className={`flex-1 py-1.5 text-sm font-medium rounded-lg transition-all ${
-              authMode === "email" 
+              !isSignUp 
                 ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm" 
                 : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
-            Email
+            Sign In
           </button>
           <button
-            onClick={() => { setAuthMode("phone"); setError(null); setMessage(null); }}
+            onClick={() => { setIsSignUp(true); setError(null); setMessage(null); }}
             className={`flex-1 py-1.5 text-sm font-medium rounded-lg transition-all ${
-              authMode === "phone" 
+              isSignUp 
                 ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm" 
                 : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
-            Phone
+            Sign Up
           </button>
+        </div>
+
+        {/* Method Toggle (Email / Phone) */}
+        <div className="flex gap-4 mb-6 justify-center">
+          <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 cursor-pointer">
+            <input 
+              type="radio" 
+              checked={authMode === "email"} 
+              onChange={() => { setAuthMode("email"); setError(null); setMessage(null); }}
+              className="accent-blue-600"
+            />
+            Use Email
+          </label>
+          <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 cursor-pointer">
+            <input 
+              type="radio" 
+              checked={authMode === "phone"} 
+              onChange={() => { setAuthMode("phone"); setError(null); setMessage(null); }}
+              className="accent-blue-600"
+            />
+            Use Phone
+          </label>
         </div>
 
         {/* Email Form */}
         {authMode === "email" && (
           <form onSubmit={handleEmailAuth} className="space-y-4 animate-in fade-in duration-200">
+            {isSignUp && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required={isSignUp}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  placeholder="John Doe"
+                />
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email Address</label>
               <input
@@ -214,7 +266,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center shadow-sm"
+              className="w-full py-2.5 px-4 mt-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center shadow-sm"
             >
               {loading ? (
                 <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
@@ -222,21 +274,25 @@ export default function LoginPage() {
                 isSignUp ? "Create Account" : "Sign In"
               )}
             </button>
-            <div className="text-center mt-4">
-              <button
-                type="button"
-                onClick={() => { setIsSignUp(!isSignUp); setError(null); setMessage(null); }}
-                className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
-              </button>
-            </div>
           </form>
         )}
 
         {/* Phone Form */}
         {authMode === "phone" && (
           <form onSubmit={handlePhoneAuth} className="space-y-4 animate-in fade-in duration-200">
+            {isSignUp && !otpSent && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required={isSignUp}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  placeholder="John Doe"
+                />
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Phone Number (with Country Code)
@@ -272,12 +328,12 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center shadow-sm"
+              className="w-full py-2.5 px-4 mt-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center shadow-sm"
             >
               {loading ? (
                 <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
               ) : (
-                otpSent ? "Verify & Login" : "Send OTP code"
+                otpSent ? "Verify & Login" : (isSignUp ? "Send Verification Code" : "Send Login Code")
               )}
             </button>
             

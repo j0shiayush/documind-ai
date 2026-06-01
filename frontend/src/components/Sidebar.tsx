@@ -198,19 +198,39 @@ export default function Sidebar({
   onRename, onDelete, onShare, isOpen, onToggle,
 }: SidebarProps) {
   const [search, setSearch] = useState("");
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  // 1. Create a smarter state to hold all user info, not just the email
+  const [userInfo, setUserInfo] = useState<{
+    name: string;
+    email: string | null;
+    avatarUrl: string | null;
+  }>({
+    name: "Loading...",
+    email: null,
+    avatarUrl: null
+  });
+  
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   
   const supabase = createClient();
   const router = useRouter();
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Fetch logged-in user email dynamically
+  // 2. Dynamically fetch Name, Email, and Google Profile Picture
   useEffect(() => {
     async function getUser() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user?.email) {
-        setUserEmail(user.email);
+      
+      if (user) {
+        // Extract metadata (Google provides 'full_name' and 'avatar_url')
+        // If a user signs up manually later, we will save their name here too!
+        const fullName = user.user_metadata?.full_name || "User";
+        const avatar = user.user_metadata?.avatar_url || null;
+        
+        setUserInfo({
+          name: fullName,
+          email: user.email || null, // Will be null for phone users
+          avatarUrl: avatar
+        });
       }
     }
     getUser();
@@ -409,17 +429,27 @@ export default function Sidebar({
             className="flex items-center gap-3 w-full rounded-xl px-3 py-2
                        hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer select-none transition-colors border border-transparent hover:border-gray-200/50 dark:hover:border-gray-700/50"
           >
-            {/* Dynamic Avatar Initials Generation */}
-            <div className="w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white font-semibold text-xs shadow-sm uppercase flex-shrink-0">
-              {userEmail ? userEmail.charAt(0) : "U"}
+            {/* 3. Smart Avatar: Shows Image if Google user, Initials otherwise */}
+            <div className="w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white font-semibold text-xs shadow-sm uppercase flex-shrink-0 relative overflow-hidden">
+              {userInfo.avatarUrl ? (
+                 <Image src={userInfo.avatarUrl} alt="Profile" fill className="object-cover" />
+              ) : (
+                 <span>{userInfo.name.charAt(0)}</span>
+              )}
             </div>
+            
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">
-                Logged in as
+              {/* 4. Display the User's actual Name */}
+              <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">
+                {userInfo.name}
               </p>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate font-medium">
-                {userEmail ?? "Loading user..."}
-              </p>
+              
+              {/* 5. Only show email if it exists. Phone users will see nothing here, hiding their number! */}
+              {userInfo.email && (
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate font-medium mt-0.5">
+                  {userInfo.email}
+                </p>
+              )}
             </div>
             <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${profileMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
