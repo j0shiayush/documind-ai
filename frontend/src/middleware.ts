@@ -13,7 +13,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - logo.png / icon.png (public images)
+     * - about (public information page for Google Verification)
      */
-    '/((?!_next/static|_next/image|favicon.ico|logo.png|icon.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|logo.png|icon.png|about|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
