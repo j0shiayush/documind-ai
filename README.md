@@ -18,11 +18,7 @@ An intelligent, full-stack document analysis platform that transforms static PDF
                   └────────────────────────────────────────┘
 ~~~
 
-<img width="1920" height="928" alt="image" src="https://github.com/user-attachments/assets/9d7a1343-64b8-49d6-9131-7790bcef69b9" />
-
 <img width="1920" height="926" alt="image" src="https://github.com/user-attachments/assets/55bbb3bc-8b0f-4f83-a323-5f7b7e424790" />
-
-<img width="1912" height="926" alt="image" src="https://github.com/user-attachments/assets/9c8c372a-1915-475c-a9e7-cf9942e702e9" />
 
 
 ---
@@ -124,7 +120,7 @@ Open your browser and navigate to `http://localhost:3000` to interact with your 
 ### 1. Secure Login
 Access the main workspace and sign in securely through the login interface.
 
-[📸 ADD YOUR AUTH/LOGIN IMAGE HERE - DELETE THIS TEXT AND DRAG & DROP IMAGE]
+<img width="1920" height="928" alt="image" src="https://github.com/user-attachments/assets/9d7a1343-64b8-49d6-9131-7790bcef69b9" />
 
 ### 2. Uploading PDFs
 Select the file upload area inside the workspace interface, drop your target PDF document, and click process.
@@ -132,7 +128,7 @@ Select the file upload area inside the workspace interface, drop your target PDF
 ### 3. Asking Questions
 Once processing completes, type inquiries inside the contextual chat box. The underlying system evaluates the document and returns precise citations.
 
-[📸 ADD YOUR GENERATED RESPONSE/CHAT IMAGE HERE - DELETE THIS TEXT AND DRAG & DROP IMAGE]
+<img width="1912" height="926" alt="image" src="https://github.com/user-attachments/assets/9c8c372a-1915-475c-a9e7-cf9942e702e9" />
 
 ### 4. Viewing Chat History
 Use the interactive historical layout sidebar to locate archived analytical sessions. Rename or clear session states natively.
