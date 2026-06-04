@@ -16,3 +16,24 @@ An intelligent, full-stack document analysis platform that transforms static PDF
                   ┌────────────────────────────────────────┐
                   │        Gemini API Intelligence         │
                   └────────────────────────────────────────┘
+
+📑 Table of ContentsFeaturesArchitecture OverviewPrerequisitesInstallationEnvironment VariablesLocal DevelopmentUsageProduction Build & DeploymentTroubleshootingNext Steps✨ Features🔒 Secure User Authentication: Seamless login and session management powered by Supabase Auth and protected Next.js routing middleware.📄 Seamless PDF Ingestion: Robust document uploading pipeline designed to process complex formatting and parse texts efficiently.⚡ Context-Aware AI Chat: Interactive conversations with the Google Gemini API, delivering precise context extraction and answers directly anchored in your uploaded documents.💾 Persistent Thread Management: Complete dynamic chat history persistence tied securely to individual user profiles.🎨 Responsive UI/UX: Modern, clean dual-mode interface implemented using Tailwind CSS, including a collapsible workspace sidebar.🏗️ Architecture OverviewDocuMind AI utilizes a modern decoupled structural pattern to ensure low-latency performance:Frontend Ecosystem: Built with Next.js, TypeScript, and Tailwind CSS.Data & Auth Tier: Managed through Supabase. Handles secure PostgreSQL relational storage for chat metadata, session IDs, and user account rules.Intelligence Layer: Anchored by the Gemini API, which processes ingested document context to generate grounded, intelligent answers.📋 PrerequisitesBefore starting local configuration, confirm your system includes:Node.js: Version 18.x or higher installed.Package Manager: npm, pnpm, or yarn.Supabase Account: Access to a live Supabase project to obtain instance credentials.Google AI Studio Account: A valid API token generated for the Gemini API.🚀 InstallationClone the repository and install the dependencies:Bash# Clone the repository
+git clone [https://github.com/yourusername/documind-ai.git](https://github.com/yourusername/documind-ai.git)
+cd documind-ai
+
+# Install dependencies
+npm install
+🔐 Environment VariablesCreate an .env.local file in your root directory and add the following keys:Code snippet# Supabase
+NEXT_PUBLIC_SUPABASE_URL=[https://your-supabase-project.supabase.co](https://your-supabase-project.supabase.co)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anonymous-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+
+# Gemini AI
+GEMINI_API_KEY=your-google-gemini-api-token
+
+# App URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+💻 Local DevelopmentTo start your client dashboard interface locally:Bashnpm run dev
+Open your browser and navigate to http://localhost:3000 to interact with your local instance.📖 Usage1. Secure LoginAccess the main workspace and sign in securely through the login interface.📸 ADD YOUR AUTH/LOGIN IMAGE HERE(Delete this quote block and drag-and-drop your login screen image here!)2. Uploading PDFsSelect the file upload area inside the workspace interface, drop your target PDF document, and click process.3. Asking QuestionsOnce processing completes, type inquiries inside the contextual chat box. The underlying system evaluates the document and returns precise citations.📸 ADD YOUR GENERATED RESPONSE/CHAT IMAGE HERE(Delete this quote block and drag-and-drop a screenshot of the AI answering a question here!)4. Viewing Chat HistoryUse the interactive historical layout sidebar to locate archived analytical sessions. Rename or clear session states natively.☁️ Production Build & DeploymentTo generate a production-optimized build for platforms like Vercel:Bashnpm run build
+npm run start
+Note: Ensure you register your production domain address (https://your-app.vercel.app) inside the Google Cloud Console OAuth Authorized Domains panel.🛠️ TroubleshootingIncidentMitigation ProcessOAuth ErrorAccess Search Console, claim URL Prefix ownership, and set Cloud Console branding to a public route (/about).Session RedirectsEnsure Next.js middleware is evaluating active cookies properly and exempting the root / path.🎯 Next Steps[ ] Integrate vector chunk embedding models natively into Postgres using pgvector.[ ] Add comparative cross-document analysis features.[ ] Introduce structural JSON export capabilities.
