@@ -1,4 +1,4 @@
-# 🧠 DocuMind AI
+# DocuMind AI
 
 An intelligent, full-stack document analysis platform that transforms static PDF documents into interactive, conversational AI assets. Driven by advanced Retrieval-Augmented Generation (RAG), DocuMind AI allows users to upload complex documents and instantly extract summaries, analyze data patterns, and query domain-specific information through an intuitive, real-time chat interface.
 
@@ -19,6 +19,10 @@ An intelligent, full-stack document analysis platform that transforms static PDF
 ~~~
 
 <img width="1920" height="928" alt="image" src="https://github.com/user-attachments/assets/9d7a1343-64b8-49d6-9131-7790bcef69b9" />
+
+<img width="1920" height="926" alt="image" src="https://github.com/user-attachments/assets/55bbb3bc-8b0f-4f83-a323-5f7b7e424790" />
+
+<img width="1912" height="926" alt="image" src="https://github.com/user-attachments/assets/9c8c372a-1915-475c-a9e7-cf9942e702e9" />
 
 
 ---
